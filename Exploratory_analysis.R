@@ -40,11 +40,14 @@ twitch_game = twitch_game %>% drop_na()
 new_data = merge(x = hist_esp, y = twitch_game, by = c("Game","Genre", "Year", "Month"), all.x = TRUE)
 new_data = new_data %>% drop_na()
 
+write.csv(new_data, "esports.csv")
+
 # plotting Earnings by tournaments by year per genre
 hist_esp %>% ggplot(aes(Year, Earnings/1000000, fill = Genre)) +
   geom_col() +
   scale_fill_manual(values = c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
                                "#44AA99", "#999933", "#661100", "#6699CC", "#882255"))
+
 
 # plotting Earnings by tournaments by year per genre from 2016
 
@@ -67,12 +70,6 @@ new_data %>% group_by(Year, Genre) %>%
   geom_col(position = "dodge")
 
 
-# corr_matrix for games
-df <- dplyr::select_if(new_data, is.numeric)
-r <- cor(df, use="complete.obs")
-ggcorrplot(r)
-
-
 # geometry line with increase of earning per genre by month
 
 grouped_df <- hist_esp %>% group_by(Genre, Year, Month) %>% 
@@ -92,7 +89,7 @@ cleaned_df %>%
   geom_smooth()
 
 
-# same with_twitch
+# same with twitch
 grouped_df <- twitch_game %>% group_by(Genre, Year, Month) %>% 
   summarise(monthly_avg_viewers = sum(Avg_viewers)) %>%
   arrange(Genre, Year, Month)
@@ -108,6 +105,19 @@ cleaned_df %>%
   geom_line() +
   facet_wrap(~Genre) + 
   geom_smooth()
+
+# corr_matrix for games
+df <- dplyr::select_if(new_data, is.numeric)
+r <- cor(df, use="complete.obs")
+ggcorrplot(r)
+
+new_data %>% 
+  subset(Genre == 'Multiplayer Online Battle Arena') %>%
+  group_by(Game) %>%
+  summarise(total_earnings = sum(Earnings)) %>%
+  arrange(desc(total_earnings)) %>%
+  ggplot(aes(Game, total_earnings/100000, fill = Game)) +
+  geom_col()
 
 
 
