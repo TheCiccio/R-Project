@@ -9,17 +9,35 @@
 
 library(shiny)
 library(tidyverse)
+library(ggpubr)
 
 esports = read.csv("esports.csv")
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-    output$genres <- renderPlot({
+    output$genres1 <- renderPlot({
       esports %>%
         filter(Genre == input$genre) %>%
-        ggplot(aes(Year, Earnings/1000000, fill = Game)) +
+        ggplot(aes(Year, Earnings/1000000, 
+                   fill = Game,
+                   sort.val = "asc")) +
         geom_col(position = 'dodge')
+    })
+    
+    output$genres2 <- renderPlot({
+      esports %>%
+        filter(Genre == input$genre) %>%
+        ggplot(aes(Year, Avg_viewers, 
+                   fill = Game,
+                   sort.val = "asc")) +
+        geom_col(position = 'dodge')
+    })
+    
+    output$secondSelection <- renderUI({
+      choice_second <- as.list(unique(esports$Game[which(esports$Genre == input$genre)]))
+      selectInput(inputId = "game", choices = choice_second,
+                  label = "Choose the game")
     })
 
 })

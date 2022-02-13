@@ -120,7 +120,21 @@ new_data %>%
   geom_col()
 
 
+# esperimentoìi
 
+grouped_df2 <- new_data %>% 
+  filter(Game == "Dota 2") %>% 
+  group_by(Game, Year, Month) %>% 
+  summarise(monthly_earnings = sum(Earnings))
+  
+grouped_df$Year_Month <- as.yearmon(paste(grouped_df$Year, grouped_df$Month), "%Y %m")
+  
+cleaned_df <- grouped_df %>% 
+  ungroup() %>%
+  select(Game, Earnings = monthly_earnings, Year_Month)
 
-
+cleaned_df %>%
+  ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
+  geom_line() +
+  geom_smooth()
 

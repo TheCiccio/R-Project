@@ -22,12 +22,18 @@ shinyUI(fluidPage(
         sidebarPanel(
           selectizeInput(inputId = "genre",
                          label = "Genres",
-                         choices = unique(esports$Genre)),
+                         choices = unique(esports$Genre),
+                         selected = unique(esports$Genre)),
+          uiOutput("secondSelection"),
         ),
 
         # Show a plot of the generated distribution
-        mainPanel(
-            plotOutput("genres")
+        mainPanel(fluidRow(
+          splitLayout(cellWidths = c("50%", "50%"), 
+                      plotOutput("genres1"), 
+                      plotOutput("genres2"))
+          )
         )
     )
-))
+  )
+)
