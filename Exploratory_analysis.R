@@ -11,6 +11,7 @@ hist_esp = read.csv("HistoricalEsportData.csv")
 gen_esp = read.csv("GeneralEsportData.csv")
 twitch_global = read.csv("Twitch_global_data.csv")
 twitch_game = read.csv("Twitch_game_data.csv")
+esports = read.csv("esports.csv")
 
 summary(hist_esp)
 sapply(hist_esp, class)
@@ -40,7 +41,6 @@ twitch_game = twitch_game %>% drop_na()
 new_data = merge(x = hist_esp, y = twitch_game, by = c("Game","Genre", "Year", "Month"), all.x = TRUE)
 new_data = new_data %>% drop_na()
 
-write.csv(new_data, "esports.csv")
 
 # plotting Earnings by tournaments by year per genre
 hist_esp %>% ggplot(aes(Year, Earnings/1000000, fill = Genre)) +
@@ -127,9 +127,9 @@ grouped_df2 <- new_data %>%
   group_by(Game, Year, Month) %>% 
   summarise(monthly_earnings = sum(Earnings))
   
-grouped_df$Year_Month <- as.yearmon(paste(grouped_df$Year, grouped_df$Month), "%Y %m")
+grouped_df2$Year_Month <- as.yearmon(paste(grouped_df2$Year, grouped_df2$Month), "%Y %m")
   
-cleaned_df <- grouped_df %>% 
+cleaned_df <- grouped_df2 %>% 
   ungroup() %>%
   select(Game, Earnings = monthly_earnings, Year_Month)
 
@@ -137,4 +137,25 @@ cleaned_df %>%
   ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
   geom_line() +
   geom_smooth()
+
+# plotting for genre
+
+grouped_df <- new_data %>% 
+  filter(Genre == "Strategy") %>% 
+  group_by(Genre, Year, Month) %>% 
+  summarise(monthly_earnings = sum(Earnings))
+
+grouped_df$Year_Month <- as.yearmon(paste(grouped_df$Year, grouped_df$Month), "%Y %m")
+
+cleaned_df <- grouped_df %>% 
+  ungroup() %>%
+  select(Genre, Earnings = monthly_earnings, Year_Month)
+
+cleaned_df %>%
+  ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
+  geom_line() +
+  geom_smooth()
+
+
+
 
