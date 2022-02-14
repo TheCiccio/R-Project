@@ -2,20 +2,38 @@ library(shiny)
 library(tidyverse)
 library(ggpubr)
 library(zoo)
+library(scales)
 
 esports = read.csv("esports.csv")
 top_teams = read.csv("top_ten_teams.csv")
 top_players = read.csv("top_players.csv")
-# Define server logic required to draw a histogram
+manualcolors<-c(
+  "dodgerblue2", "#E31A1C", # red
+  "green4",
+  "#6A3D9A", # purple
+  "#FF7F00", # orange
+  "black", "gold1",
+  "skyblue2", "#FB9A99", # lt pink
+  "palegreen2",
+  "#CAB2D6", # lt purple
+  "#FDBF6F", # lt orange
+  "gray70", "khaki2",
+  "maroon", "orchid1", "deeppink1", "blue1", "steelblue4",
+  "darkturquoise", "green1", "yellow4", "yellow3",
+  "darkorange4", "brown", 'darkblue')
+# Define server
 shinyServer(function(input, output) {
-
+    
+    # Genres
     output$genres1 <- renderPlot({
       esports %>%
         filter(Genre == input$genre) %>%
-        ggplot(aes(Year, Earnings/1000000, 
+        ggplot(aes(x= Year, y = Earnings/1000000, 
                    fill = Game,
                    sort.val = "asc")) +
-        geom_col(position = 'dodge')
+        geom_col(position = 'dodge') +
+        scale_fill_manual(values = manualcolors) +
+        labs(y = "Earnings (millions of dollars)")
     })
     
     output$genres2 <- renderPlot({
@@ -24,7 +42,8 @@ shinyServer(function(input, output) {
         ggplot(aes(Year, Avg_viewers, 
                    fill = Game,
                    sort.val = "asc")) +
-        geom_col(position = 'dodge')
+        geom_col(position = 'dodge') +
+        scale_fill_manual(values = manualcolors)
     })
     
     output$genres3 <- renderPlot({
@@ -42,7 +61,9 @@ shinyServer(function(input, output) {
       cleaned_df %>%
         ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
         geom_line() +
-        geom_smooth()
+        geom_smooth() +
+        labs(y = "Earnings", x = "Year") +
+        scale_y_continuous( trans= 'log10')
     })
     
     output$genres4 <- renderPlot({
@@ -60,7 +81,8 @@ shinyServer(function(input, output) {
       cleaned_df %>%
         ggplot(aes(Year_Month, log10(Avg_viewers), color = 'red')) +
         geom_line() +
-        geom_smooth()
+        geom_smooth() +
+        labs(y = "Avg_viewers", x = "Year")
     })
     
     output$genres5 <- renderPlot({
@@ -78,13 +100,15 @@ shinyServer(function(input, output) {
       cleaned_df %>%
         ggplot(aes(Year_Month, log10(Peak_viewers), color = 'red')) +
         geom_line() +
-        geom_smooth()
+        geom_smooth() +
+        labs(y = "Peak viewers", x = "Year")
     })
     
+    # Games
     output$secondSelection <- renderUI({
       choice_second <- as.list(unique(esports$Game[which(esports$Genre == input$genre)]))
       selectInput(inputId = "game", choices = choice_second,
-                  label = "Choose the game")
+                  label = "Choose your game")
     })
     
     output$games1 <- renderPlot({
@@ -102,7 +126,8 @@ shinyServer(function(input, output) {
       cleaned_df %>%
         ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
         geom_line() +
-        geom_smooth()
+        geom_smooth() +
+        labs(y = "Earnings", x = "Year")
     })
     
     output$games2 <- renderPlot({
@@ -120,7 +145,8 @@ shinyServer(function(input, output) {
       cleaned_df %>%
         ggplot(aes(Year_Month, log10(Avg_viewers), color = 'red')) +
         geom_line() +
-        geom_smooth()
+        geom_smooth() +
+        labs(y = "Avg_viewers", x = "Year")
     })
     
     output$games3 <- renderPlot({
@@ -138,20 +164,25 @@ shinyServer(function(input, output) {
       cleaned_df %>%
         ggplot(aes(Year_Month, log10(Peak_viewers), color = 'red')) +
         geom_line() +
-        geom_smooth()
+        geom_smooth() +
+        labs(y = "Peak viewers", x = "Year")
     })
     
+    # Teams
     output$thirdSelection <- renderUI({
       choice_third <- as.list(unique(top_teams$TeamName[which(top_teams$Genre == input$genre & top_teams$Game == input$game)]))
       selectInput(inputId = "team", choices = choice_third,
-                  label = "Choose the team")
+                  label = "Choose your team")
     })
     
     output$teams1 <- renderPlot({
       top_teams %>% 
         filter(Game == input$game) %>%
-        ggplot(aes(TeamName, TotalUSDPrize/100000, fill = TeamName)) +
-        geom_col()
+        ggplot(aes(TeamName, TotalUSDPrize/1000000, fill = TeamName)) +
+        geom_col() +
+        scale_fill_manual(values = manualcolors) +
+        labs(y = "Total Prizes", x = "Team Name") +
+        theme(axis.text.x=element_text(angle=45, hjust=1))
       
     })
     
@@ -171,17 +202,21 @@ shinyServer(function(input, output) {
       )
     })
     
+    # Player
     output$fourthSelection <- renderUI({
       choice_fourth <- as.list(unique(top_players$CurrentHandle[which(top_players$Genre == input$genre & top_players$Game == input$game)]))
       selectInput(inputId = "player", choices = choice_fourth,
-                  label = "Choose the player")
+                  label = "Choose your player")
     })
     
     output$players1 <- renderPlot({
       top_players %>% 
         filter(Game == input$game) %>%
-        ggplot(aes(CurrentHandle, TotalUSDPrize/100000, fill = CurrentHandle)) +
-        geom_col()
+        ggplot(aes(CurrentHandle, TotalUSDPrize/1000000, fill = CurrentHandle)) +
+        geom_col() +
+        scale_fill_manual(values = manualcolors) +
+        labs(y = "Total Prizes", x = "Player") +
+        theme(axis.text.x=element_text(angle=45, hjust=1))
       
     })
     
@@ -196,7 +231,7 @@ shinyServer(function(input, output) {
     output$countryBox2 <- renderValueBox({
       Country <- top_players %>% filter(CurrentHandle == input$player & Game == input$game) %>% select(CountryCode)
       valueBox(
-        paste(Country), "Country", icon = icon("thumbs-up", lib = "glyphicon"),
+        paste(Country), "Country", icon = icon("globe"),
         color = "purple"
       )
     })

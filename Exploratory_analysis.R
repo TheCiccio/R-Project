@@ -5,6 +5,7 @@ library(corrplot)
 library(ggcorrplot)
 library(rcartocolor)
 library(zoo)
+library(shiny)
 
 #loading datasets
 hist_esp = read.csv("HistoricalEsportData.csv")
@@ -180,7 +181,7 @@ top_ten_players = players %>%
 
 write.csv(top_ten_players, "C:\\Users\\Francesco\\Desktop\\R\\R project\\R-Project\\demo_games\\top_players.csv")
 
-
+?validStatuses
   
   
   
