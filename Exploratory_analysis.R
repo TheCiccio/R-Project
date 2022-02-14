@@ -158,12 +158,32 @@ cleaned_df %>%
   geom_line() +
   geom_smooth()
 
-# plotting 10 best teamns per game
+# 10 best teamns per game
 top_ten_teams = teams %>%
   group_by(Game) %>%
   arrange(desc(TotalUSDPrize)) %>%
-  slice(1:10)
-
+  slice(1:10) %>%
   ggplot(aes(TeamName, TotalUSDPrize/100000, fill = TeamName)) +
   geom_col()
 
+top_ten_teams %>%
+  filter(TeamName == "eStar Gaming") %>%
+  ggplot((aes(TotalTournaments, TotalUSDPrize)))+
+  geom_point()
+
+# 10 best player per game
+top_ten_players = players %>%
+  group_by(Game) %>%
+  arrange(desc(TotalUSDPrize)) %>%
+  slice(1:10) 
+
+
+write.csv(top_ten_players, "C:\\Users\\Francesco\\Desktop\\R\\R project\\R-Project\\demo_games\\top_players.csv")
+
+
+  
+  
+  
+  
+  
+  

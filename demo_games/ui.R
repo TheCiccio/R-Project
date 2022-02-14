@@ -1,8 +1,10 @@
 library(shiny)
 library(shinydashboard)
+library(zoo)
 
 esports = read.csv("esports.csv")
-teams = read.csv("top_ten_teams.csv")
+top_teams = read.csv("top_ten_teams.csv")
+top_players = read.csv("top_players.csv")
 # Define UI for application that draws a histogram
 dashboardPage(
   dashboardHeader(title = "E-Sports"),
@@ -102,20 +104,35 @@ dashboardPage(
                   title = 'Choose your Team', status = "primary", solidHeader = TRUE,
                   uiOutput("thirdSelection")
                 ),
+                valueBoxOutput("earningBox")
               ),
-              
               fluidRow(
                 box(
-                  title = "Best ten teams", width = 6, background = "green", solidHeader = TRUE,
+                  title = "Best ten teams", background = "green", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("teams1", height = 300)
                 ),
-                
-              ),
+                valueBoxOutput("tournamentBox")
+                )
       ),
+      
       #Players tab content
       tabItem(tabName = "Player",
-              h2("Player tab content")
+              fluidRow(
+                box(
+                  title = 'Choose your Player', status = "primary", solidHeader = TRUE,
+                  uiOutput("fourthSelection")
+                ),
+                valueBoxOutput("earningBox2")
+              ),
+              fluidRow(
+                box(
+                  title = "Best ten players", background = "green", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("players1", height = 300)
+                ),
+                valueBoxOutput("countryBox2")
+              )
       )
     )
   )

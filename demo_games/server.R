@@ -1,18 +1,11 @@
-#
-# This is the server logic of a Shiny web application. You can run the
-# application by clicking 'Run App' above.
-#
-# Find out more about building applications with Shiny here:
-#
-#    http://shiny.rstudio.com/
-#
-
 library(shiny)
 library(tidyverse)
 library(ggpubr)
+library(zoo)
 
 esports = read.csv("esports.csv")
-teams = read.csv("top_ten_teams.csv")
+top_teams = read.csv("top_ten_teams.csv")
+top_players = read.csv("top_players.csv")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
@@ -149,16 +142,63 @@ shinyServer(function(input, output) {
     })
     
     output$thirdSelection <- renderUI({
-      choice_third <- as.list(unique(teams$TeamName[which(teams$Genre == input$genre & teams$Game == input$game)]))
+      choice_third <- as.list(unique(top_teams$TeamName[which(top_teams$Genre == input$genre & top_teams$Game == input$game)]))
       selectInput(inputId = "team", choices = choice_third,
                   label = "Choose the team")
     })
     
     output$teams1 <- renderPlot({
-      teams %>% 
+      top_teams %>% 
+        filter(Game == input$game) %>%
         ggplot(aes(TeamName, TotalUSDPrize/100000, fill = TeamName)) +
         geom_col()
       
+    })
+    
+    output$earningBox <- renderValueBox({
+      earning <- top_teams %>% filter(TeamName == input$team & Game == input$game) %>% select(TotalUSDPrize)
+      valueBox(
+        paste0(round(earning/1000000, 2), "$"), "Million Dollars", icon = icon("credit-card"),
+        color = "purple"
+      )
+    })
+    
+    output$tournamentBox <- renderValueBox({
+      tournament <- top_teams %>% filter(TeamName == input$team & Game == input$game) %>% select(TotalTournaments)
+      valueBox(
+        paste0(tournament), "Tournaments", icon = icon("thumbs-up", lib = "glyphicon"),
+        color = "purple"
+      )
+    })
+    
+    output$fourthSelection <- renderUI({
+      choice_fourth <- as.list(unique(top_players$CurrentHandle[which(top_players$Genre == input$genre & top_players$Game == input$game)]))
+      selectInput(inputId = "player", choices = choice_fourth,
+                  label = "Choose the player")
+    })
+    
+    output$players1 <- renderPlot({
+      top_players %>% 
+        filter(Game == input$game) %>%
+        ggplot(aes(CurrentHandle, TotalUSDPrize/100000, fill = CurrentHandle)) +
+        geom_col()
+      
+    })
+    
+    output$earningBox2 <- renderValueBox({
+      earning <- top_players %>% filter(CurrentHandle == input$player & Game == input$game) %>% select(TotalUSDPrize)
+      valueBox(
+        paste0(round(earning/1000000, 2), "$"), "Million Dollars", icon = icon("credit-card"),
+        color = "purple"
+      )
+    })
+    
+    output$countryBox2 <- renderValueBox({
+      Country <- top_players %>% filter(CurrentHandle == input$player & Game == input$game) %>% select(CountryCode)
+      valueBox(
+        paste(Country), "Country", icon = icon("thumbs-up", lib = "glyphicon"),
+        color = "purple"
+      )
     })
     
 })
