@@ -12,7 +12,7 @@ library(tidyverse)
 library(ggpubr)
 
 esports = read.csv("esports.csv")
-
+teams = read.csv("top_ten_teams.csv")
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
@@ -32,12 +32,6 @@ shinyServer(function(input, output) {
                    fill = Game,
                    sort.val = "asc")) +
         geom_col(position = 'dodge')
-    })
-    
-    output$secondSelection <- renderUI({
-      choice_second <- as.list(unique(esports$Game[which(esports$Genre == input$genre)]))
-      selectInput(inputId = "game", choices = choice_second,
-                  label = "Choose the game")
     })
     
     output$genres3 <- renderPlot({
@@ -92,6 +86,79 @@ shinyServer(function(input, output) {
         ggplot(aes(Year_Month, log10(Peak_viewers), color = 'red')) +
         geom_line() +
         geom_smooth()
+    })
+    
+    output$secondSelection <- renderUI({
+      choice_second <- as.list(unique(esports$Game[which(esports$Genre == input$genre)]))
+      selectInput(inputId = "game", choices = choice_second,
+                  label = "Choose the game")
+    })
+    
+    output$games1 <- renderPlot({
+      grouped_df <- esports %>% 
+        filter(Game == input$game) %>% 
+        group_by(Game, Year, Month) %>% 
+        summarise(monthly_earnings = sum(Earnings))
+      
+      grouped_df$Year_Month <- as.yearmon(paste(grouped_df$Year, grouped_df$Month), "%Y %m")
+      
+      cleaned_df <- grouped_df %>% 
+        ungroup() %>%
+        select(Game, Earnings = monthly_earnings, Year_Month)
+      
+      cleaned_df %>%
+        ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
+        geom_line() +
+        geom_smooth()
+    })
+    
+    output$games2 <- renderPlot({
+      grouped_df <- esports %>% 
+        filter(Game == input$game) %>% 
+        group_by(Game, Year, Month) %>% 
+        summarise(monthly_avg_viewers = sum(Avg_viewers))
+      
+      grouped_df$Year_Month <- as.yearmon(paste(grouped_df$Year, grouped_df$Month), "%Y %m")
+      
+      cleaned_df <- grouped_df %>% 
+        ungroup() %>%
+        select(Game, Avg_viewers = monthly_avg_viewers, Year_Month)
+      
+      cleaned_df %>%
+        ggplot(aes(Year_Month, log10(Avg_viewers), color = 'red')) +
+        geom_line() +
+        geom_smooth()
+    })
+    
+    output$games3 <- renderPlot({
+      grouped_df <- esports %>% 
+        filter(Game == input$game) %>% 
+        group_by(Game, Year, Month) %>% 
+        summarise(monthly_peak = sum(Peak_viewers))
+      
+      grouped_df$Year_Month <- as.yearmon(paste(grouped_df$Year, grouped_df$Month), "%Y %m")
+      
+      cleaned_df <- grouped_df %>% 
+        ungroup() %>%
+        select(Game, Peak_viewers = monthly_peak, Year_Month)
+      
+      cleaned_df %>%
+        ggplot(aes(Year_Month, log10(Peak_viewers), color = 'red')) +
+        geom_line() +
+        geom_smooth()
+    })
+    
+    output$thirdSelection <- renderUI({
+      choice_third <- as.list(unique(teams$TeamName[which(teams$Genre == input$genre & teams$Game == input$game)]))
+      selectInput(inputId = "team", choices = choice_third,
+                  label = "Choose the team")
+    })
+    
+    output$teams1 <- renderPlot({
+      teams %>% 
+        ggplot(aes(TeamName, TotalUSDPrize/100000, fill = TeamName)) +
+        geom_col()
+      
     })
     
 })

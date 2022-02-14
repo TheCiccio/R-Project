@@ -2,6 +2,7 @@ library(shiny)
 library(shinydashboard)
 
 esports = read.csv("esports.csv")
+teams = read.csv("top_ten_teams.csv")
 # Define UI for application that draws a histogram
 dashboardPage(
   dashboardHeader(title = "E-Sports"),
@@ -24,8 +25,7 @@ dashboardPage(
                   title = 'Choose your Genre', status = "primary", solidHeader = TRUE,
                   selectizeInput(inputId = "genre",
                                  label = "Genres",
-                                 choices = unique(esports$Genre),
-                                 selected = unique(esports$Genre))
+                                 choices = unique(esports$Genre))
 
                 ),
                 box(
@@ -47,17 +47,17 @@ dashboardPage(
               ),
               fluidRow(
                 box(
-                  title = "Rate of earnings per month", background = "red", solidHeader = TRUE,
+                  title = "Rate of earnings per month", width = 4, background = "red", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("genres3", height = 300)
                 ),
                 box(
-                  title = "Rate of average viewers per month", background = "purple", solidHeader = TRUE,
+                  title = "Rate of average viewers per month", width = 4, background = "purple", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("genres4", height = 300)
                 ),
                 box(
-                  title = "Peak of viewers per month", background = "purple", solidHeader = TRUE,
+                  title = "Peak of viewers per month", width = 4, background = "purple", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("genres5", height = 300)
                 )
@@ -65,18 +65,58 @@ dashboardPage(
       ),
       # Game tab content
       tabItem(tabName = "Game",
-              h2("Widgets tab content")
+              fluidRow(
+                box(
+                  title = 'Choose your Game', status = "primary", solidHeader = TRUE,
+                  uiOutput("secondSelection")
+                ),
+                box(
+                  title = "Years", status = "warning", solidHeader = TRUE,
+                  sliderInput("slider", "Select a range of years:", 2016, 2021, 2021),
+                ),
+              ),
+
+              fluidRow(
+                box(
+                  title = "Rate of earnings per month", width = 4, background = "red", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("games1", height = 300)
+                ),
+                box(
+                  title = "Rate of average viewers per month", width = 4, background = "purple", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("games2", height = 300)
+                ),
+                box(
+                  title = "Peak of viewers per month", width = 4, background = "purple", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("games3", height = 300)
+                )
+              ),
       ),
       
       # Team tab content
       tabItem(tabName = "Team",
-              h2("Team tab content")
+              fluidRow(
+                box(
+                  title = 'Choose your Team', status = "primary", solidHeader = TRUE,
+                  uiOutput("thirdSelection")
+                ),
+              ),
+              
+              fluidRow(
+                box(
+                  title = "Best ten teams", width = 6, background = "green", solidHeader = TRUE,
+                  collapsible = TRUE,
+                  plotOutput("teams1", height = 300)
+                ),
+                
+              ),
       ),
-      
       #Players tab content
       tabItem(tabName = "Player",
-              h2("Team tab content")
+              h2("Player tab content")
       )
-      )
+    )
   )
 )

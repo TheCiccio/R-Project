@@ -12,6 +12,8 @@ gen_esp = read.csv("GeneralEsportData.csv")
 twitch_global = read.csv("Twitch_global_data.csv")
 twitch_game = read.csv("Twitch_game_data.csv")
 esports = read.csv("esports.csv")
+teams = read.csv("highest_earning_teams.csv")
+players = read.csv("highest_earning_players.csv")
 
 summary(hist_esp)
 sapply(hist_esp, class)
@@ -156,6 +158,12 @@ cleaned_df %>%
   geom_line() +
   geom_smooth()
 
+# plotting 10 best teamns per game
+top_ten_teams = teams %>%
+  group_by(Game) %>%
+  arrange(desc(TotalUSDPrize)) %>%
+  slice(1:10)
 
-
+  ggplot(aes(TeamName, TotalUSDPrize/100000, fill = TeamName)) +
+  geom_col()
 
