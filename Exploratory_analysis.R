@@ -49,7 +49,8 @@ new_data = new_data %>% drop_na()
 hist_esp %>% ggplot(aes(Year, Earnings/1000000, fill = Genre)) +
   geom_col() +
   scale_fill_manual(values = c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255"))
+                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255")) +
+  labs(y = "Earnings (millions of dollars)")
 
 
 # plotting Earnings by tournaments by year per genre from 2016
@@ -57,20 +58,16 @@ hist_esp %>% ggplot(aes(Year, Earnings/1000000, fill = Genre)) +
 new_data %>% ggplot(aes(Year, Earnings/1000000, fill = Genre)) +
   geom_col(position = "dodge") +
   scale_fill_manual(values = c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255"))
+                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255")) +
+  labs(y = "Earnings (millions of dollars)")
 
 
 # plotting average viewers on twitch by year per genre
-twitch_game %>% ggplot(aes(Year, Avg_viewers/1000, fill = Genre)) +
+twitch_game %>% ggplot(aes(Year, Avg_viewers/1000000, fill = Genre)) +
   geom_col(position = "dodge") +
   scale_fill_manual(values = c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
-                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255"))
-
-
-new_data %>% group_by(Year, Genre) %>%
-  count(Earnings) %>%
-  ggplot(aes(x= reorder(Year, Earnings), y = Earnings/1000000, fill = Genre)) +
-  geom_col(position = "dodge")
+                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255")) +
+  labs(y = "Earnings (millions of people)")
 
 
 # geometry line with increase of earning per genre by month
@@ -89,7 +86,9 @@ cleaned_df %>%
   ggplot(aes(Year_Month, log10(Earnings), color = Genre)) +
   geom_line() +
   facet_wrap(~Genre) + 
-  geom_smooth()
+  geom_smooth() +
+  labs(y = "Earnings", x = "Year") +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
 
 
 # same with twitch
@@ -107,7 +106,9 @@ cleaned_df %>%
   ggplot(aes(Year_Month, log10(Avg_viewers), color = Genre)) +
   geom_line() +
   facet_wrap(~Genre) + 
-  geom_smooth()
+  geom_smooth() +
+  labs(y = "Earnings", x = "Year") +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
 
 # corr_matrix for games
 df <- dplyr::select_if(new_data, is.numeric)
@@ -123,7 +124,7 @@ new_data %>%
   geom_col()
 
 
-# esperimentoìi
+# esperimenti
 
 grouped_df2 <- new_data %>% 
   filter(Game == "Dota 2") %>% 
