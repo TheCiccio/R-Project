@@ -113,7 +113,7 @@ cleaned_df %>%
 # corr_matrix for games
 df <- dplyr::select_if(new_data, is.numeric)
 r <- cor(df, use="complete.obs")
-ggcorrplot(r)
+corrplot(r, method = "color", order = "AOE", type = "lower", diag = FALSE)
 
 new_data %>% 
   subset(Genre == 'Multiplayer Online Battle Arena') %>%
@@ -180,12 +180,17 @@ top_ten_players = players %>%
   slice(1:10) 
 
 
-write.csv(top_ten_players, "C:\\Users\\Francesco\\Desktop\\R\\R project\\R-Project\\demo_games\\top_players.csv")
 
-?validStatuses
+new_data %>% 
+  filter(Game == "Dota 2") %>% 
+  ggplot(aes(x = Avg_viewers, y = Earnings)) +
+  geom_point()
   
   
   
-  
-  
+new_data %>% ggplot(aes(Year, Avg_viewers/1000000, fill = Genre)) +
+  geom_col() +
+  scale_fill_manual(values = c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", 
+                               "#44AA99", "#999933", "#661100", "#6699CC", "#882255")) +
+  labs(y = "Avg_viewers (millions of people)")  
   

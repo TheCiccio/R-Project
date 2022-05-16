@@ -7,6 +7,7 @@ esports = read.csv("esports.csv")
 top_teams = read.csv("top_ten_teams.csv")
 top_players = read.csv("top_players.csv")
 # Define UI for application that draws a histogram
+
 dashboardPage(skin = "purple",
   dashboardHeader(title = "Choose your Champion", titleWidth = 250),
   
@@ -25,20 +26,20 @@ dashboardPage(skin = "purple",
       tabItem(tabName = "Genre",
               fluidRow(
                 box(
-                  title = 'Choose your Genre', status = "warning", solidHeader = TRUE,
+                  title = 'Choose your Genre', status = "success", solidHeader = TRUE,
                   selectizeInput(inputId = "genre",
                                  label = "Genres",
                                  choices = unique(esports$Genre))
 
                 ),
                 box(
-                  title = "Years", status = "warning", solidHeader = TRUE,
+                  title = "Years", status = "success", solidHeader = TRUE,
                   sliderInput("slider", "Select a range of years:", 2016, 2021, 2021),
                 ),
               ),
               fluidRow(
                 box(
-                  title = "Earnings", background = "yellow", solidHeader = TRUE,
+                  title = "Earnings", background = "green", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("genres1", height = 300)
                 ),
@@ -50,7 +51,7 @@ dashboardPage(skin = "purple",
               ),
               fluidRow(
                 box(
-                  title = "Rate of earnings per month", width = 4, background = "yellow", solidHeader = TRUE,
+                  title = "Rate of earnings per month", width = 4, background = "green", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("genres3", height = 300)
                 ),
@@ -70,18 +71,18 @@ dashboardPage(skin = "purple",
       tabItem(tabName = "Game",
               fluidRow(
                 box(
-                  title = 'Choose your Game', status = "warning", solidHeader = TRUE,
+                  title = 'Choose your Game', status = "success", solidHeader = TRUE,
                   uiOutput("secondSelection")
                 ),
                 box(
-                  title = "Years", status = "warning", solidHeader = TRUE,
+                  title = "Years", status = "success", solidHeader = TRUE,
                   sliderInput("slider", "Select a range of years:", 2016, 2021, 2021),
                 ),
               ),
 
               fluidRow(
                 box(
-                  title = "Rate of earnings per month", width = 4, background = "yellow", solidHeader = TRUE,
+                  title = "Rate of earnings per month", width = 4, background = "green", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("games1", height = 300)
                 ),
@@ -102,14 +103,14 @@ dashboardPage(skin = "purple",
       tabItem(tabName = "Team",
               fluidRow(
                 box(
-                  title = 'Choose your Team', status = "warning", solidHeader = TRUE,
+                  title = 'Choose your Team', status = "success", solidHeader = TRUE,
                   uiOutput("thirdSelection")
                 ),
                 valueBoxOutput("earningBox")
               ),
               fluidRow(
                 box(
-                  title = "Best ten teams", background = "yellow", solidHeader = TRUE,
+                  title = "Best ten teams", background = "green", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("teams1", height = 300)
                 ),
@@ -121,14 +122,14 @@ dashboardPage(skin = "purple",
       tabItem(tabName = "Player",
               fluidRow(
                 box(
-                  title = 'Choose your Player', status = "warning", solidHeader = TRUE,
+                  title = 'Choose your Player', status = "success", solidHeader = TRUE,
                   uiOutput("fourthSelection")
                 ),
                 valueBoxOutput("earningBox2")
               ),
               fluidRow(
                 box(
-                  title = "Best ten players", background = "yellow", solidHeader = TRUE,
+                  title = "Best ten players", background = "green", solidHeader = TRUE,
                   collapsible = TRUE,
                   plotOutput("players1", height = 300)
                 ),

@@ -39,11 +39,12 @@ shinyServer(function(input, output) {
     output$genres2 <- renderPlot({
       esports %>%
         filter(Genre == input$genre) %>%
-        ggplot(aes(Year, Avg_viewers, 
+        ggplot(aes(Year, Avg_viewers/1000, 
                    fill = Game,
                    sort.val = "asc")) +
         geom_col(position = 'dodge') +
-        scale_fill_manual(values = manualcolors)
+        scale_fill_manual(values = manualcolors) +
+        labs(y = "Avg viewers (thousands of people)")
     })
     
     output$genres3 <- renderPlot({
@@ -59,11 +60,12 @@ shinyServer(function(input, output) {
         select(Genre, Earnings = monthly_earnings, Year_Month)
       
       cleaned_df %>%
-        ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
+        ggplot(aes(Year_Month, Earnings/1000, color = 'red')) +
         geom_line() +
         geom_smooth() +
-        labs(y = "Earnings", x = "Year") +
-        scale_y_continuous( trans= 'log10')
+        labs(y = "Earnings (thousands)", x = "Year") +
+        scale_y_continuous( trans= 'log10') +
+        theme(legend.position="none")
     })
     
     output$genres4 <- renderPlot({
@@ -79,10 +81,13 @@ shinyServer(function(input, output) {
         select(Genre, Avg_viewers = monthly_avg_viewers, Year_Month)
       
       cleaned_df %>%
-        ggplot(aes(Year_Month, log10(Avg_viewers), color = 'red')) +
+        ggplot(aes(Year_Month, Avg_viewers/1000, color = 'red')) +
         geom_line() +
         geom_smooth() +
-        labs(y = "Avg_viewers", x = "Year")
+        labs(y = "Avg viewers (thousands)", x = "Year") +
+        scale_y_continuous(trans = 'log10') +
+        theme(legend.position="none")
+        
     })
     
     output$genres5 <- renderPlot({
@@ -98,10 +103,11 @@ shinyServer(function(input, output) {
         select(Genre, Peak_viewers = monthly_peak, Year_Month)
       
       cleaned_df %>%
-        ggplot(aes(Year_Month, log10(Peak_viewers), color = 'red')) +
+        ggplot(aes(Year_Month, Peak_viewers/1000, color = 'red')) +
         geom_line() +
         geom_smooth() +
-        labs(y = "Peak viewers", x = "Year")
+        labs(y = "Peak viewers (thousands)", x = "Year") +
+        theme(legend.position="none")
     })
     
     # Games
@@ -124,10 +130,11 @@ shinyServer(function(input, output) {
         select(Game, Earnings = monthly_earnings, Year_Month)
       
       cleaned_df %>%
-        ggplot(aes(Year_Month, log10(Earnings), color = 'red')) +
+        ggplot(aes(Year_Month, Earnings/1000, color = 'red')) +
         geom_line() +
         geom_smooth() +
-        labs(y = "Earnings", x = "Year")
+        labs(y = "Earnings (thousands)", x = "Year") +
+        theme(legend.position="none")
     })
     
     output$games2 <- renderPlot({
@@ -143,10 +150,11 @@ shinyServer(function(input, output) {
         select(Game, Avg_viewers = monthly_avg_viewers, Year_Month)
       
       cleaned_df %>%
-        ggplot(aes(Year_Month, log10(Avg_viewers), color = 'red')) +
+        ggplot(aes(Year_Month, Avg_viewers/1000, color = 'red')) +
         geom_line() +
         geom_smooth() +
-        labs(y = "Avg_viewers", x = "Year")
+        labs(y = "Avg viewers (thousands)", x = "Year") +
+        theme(legend.position="none")
     })
     
     output$games3 <- renderPlot({
@@ -162,10 +170,11 @@ shinyServer(function(input, output) {
         select(Game, Peak_viewers = monthly_peak, Year_Month)
       
       cleaned_df %>%
-        ggplot(aes(Year_Month, log10(Peak_viewers), color = 'red')) +
+        ggplot(aes(Year_Month, Peak_viewers/1000, color = 'red')) +
         geom_line() +
         geom_smooth() +
-        labs(y = "Peak viewers", x = "Year")
+        labs(y = "Peak viewers (thousands)", x = "Year") +
+        theme(legend.position="none")
     })
     
     # Teams
@@ -181,7 +190,7 @@ shinyServer(function(input, output) {
         ggplot(aes(TeamName, TotalUSDPrize/1000000, fill = TeamName)) +
         geom_col() +
         scale_fill_manual(values = manualcolors) +
-        labs(y = "Total Prizes", x = "Team Name") +
+        labs(y = "Total Prizes (Million dollars)", x = "Team Name") +
         theme(axis.text.x=element_text(angle=45, hjust=1))
       
     })
@@ -215,7 +224,7 @@ shinyServer(function(input, output) {
         ggplot(aes(CurrentHandle, TotalUSDPrize/1000000, fill = CurrentHandle)) +
         geom_col() +
         scale_fill_manual(values = manualcolors) +
-        labs(y = "Total Prizes", x = "Player") +
+        labs(y = "Total Prizes (Million dollars)", x = "Player") +
         theme(axis.text.x=element_text(angle=45, hjust=1))
       
     })
